@@ -1,0 +1,16 @@
+sku,name,category,unit,current_stock,min_stock_level,max_stock_capacity,unit_price,lead_time_days,supplier,spookiness_level,notes
+NS-BEV-001,Organic Blood Orange Cold Brew,Beverages & Potions,Bottles,12,30,150,4.99,3,Stumptown Artisans,3,Cold pressed Valencia blood oranges infused with dark roast Arabica.
+NS-MED-002,Sterile Saline 0.9% IV Infusion 1000ml,Medical & Salves,Bags,68,25,200,12.50,2,Baxter Healthcare,1,Standard clinical isotonic sodium chloride injection solution.
+NS-FOD-003,Organic Heirloom Pumpkin Puree 15oz,Baking & Reagents,Cans,18,40,180,3.25,4,Libby's Organics,2,100% pure Dickinson pumpkin puree. High seasonal autumn demand.
+NS-DEC-004,Handcrafted Ceramic Jack-O'-Lantern,Seasonal Decor,Pieces,0,10,50,24.99,7,Sleepy Hollow Crafts,4,Hand-glazed terracotta lantern with candle vent. Sold out currently.
+NS-MED-005,Epinephrine Auto-Injector 0.3mg,Emergency Medical,Units,6,15,40,145.00,5,Mylan Specialty,2,Critical life-safety emergency medication. Low stock threshold alert.
+NS-DEC-006,Dense Fog Machine Fluid 1-Gallon,Stage & Special FX,Gallons,22,20,100,18.75,3,Chauvet DJ Supplies,3,Water-based non-toxic high-density atmospheric aerosol solution.
+NS-FOD-007,Dark Chocolate Obsidian Truffles 72%,Confectionery,Boxes,45,25,120,8.95,3,Ghirardelli Artisan,3,Single-origin Ecuadorian cocoa dusted with black sea salt.
+NS-BEV-008,Activated Charcoal Detox Tonic 16oz,Beverages & Potions,Bottles,15,25,90,5.50,2,Dirty Lemon Co.,4,Coconut-derived USP activated carbon with cold-pressed lemon and ginger.
+NS-SUP-009,Obsidian Beeswax Taper Candles 12-inch,Ritual & Lighting,Pairs,52,20,100,14.00,3,Root Candle Co.,3,100% pure organic beeswax dyed with natural mineral pigments.
+NS-MED-010,Cohesive Flexible Bandage Wrap 3-inch,Medical & Salves,Rolls,84,30,250,2.75,2,3M Healthcare,1,Self-adherent breathable elastic support compression wrap.
+NS-SUP-011,Cast Iron Dutch Oven Cauldron 6-Qt,Cookware & Tools,Units,0,8,30,68.00,6,Lodge Cast Iron,4,Pre-seasoned heavy cast iron kettle with bail handle and flanged lid.
+NS-DEC-012,Ultra-Bright LED Strobe Lighting 50W,Stage & Special FX,Units,14,12,60,34.50,4,Eliminator Lighting,3,High-frequency variable strobe light with DMX sound sync.
+NS-MED-013,Povidone-Iodine Antiseptic Prep 16oz,Medical & Salves,Bottles,38,15,80,9.80,3,Betadine Purdue,2,10% topical microbicide solution for clinical skin disinfection.
+NS-FOD-014,Ghost Pepper Smoked Sea Salt 8oz,Spices & Seasoning,Jars,9,20,75,11.20,3,Jacobsen Salt Co.,5,Solar-evaporated Pacific sea salt infused with smoked Bhut Jolokia.
+NS-BEV-015,Tart Cherry Melatonin Restorative Elixir,Beverages & Potions,Bottles,31,20,110,6.40,3,Cheribundi Wellness,2,Montmorency tart cherry concentrate with natural phytonutrients.

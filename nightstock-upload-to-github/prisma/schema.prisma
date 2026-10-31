@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Product {
+  id                 Int                  @id @default(autoincrement())
+  sku                String               @unique
+  name               String
+  category           String
+  unit               String               @default("Vials")
+  currentStock       Float                @default(0.0) @map("current_stock")
+  minStockLevel      Float                @default(10.0) @map("min_stock_level")
+  maxStockCapacity   Float                @default(100.0) @map("max_stock_capacity")
+  unitPrice          Float                @default(0.0) @map("unit_price")
+  leadTimeDays       Int                  @default(3) @map("lead_time_days")
+  supplier           String               @default("Coven Unknown")
+  spookinessLevel    Int                  @default(3) @map("spookiness_level")
+  notes              String?              @default("")
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
+
+  consumptionLogs    ConsumptionLog[]
+  alerts             Alert[]
+  scheduledShipments ScheduledShipment[]
+
+  @@map("products")
+}
+
+model ConsumptionLog {
+  id         Int      @id @default(autoincrement())
+  productId  Int      @map("product_id")
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  date       String
+  quantity   Float
+  loggedBy   String   @default("High Necromancer") @map("logged_by")
+  reason     String?  @default("Midnight Demand")
+  isAnomaly  Boolean  @default(false) @map("is_anomaly")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("consumption_logs")
+}
+
+model Alert {
+  id           Int      @id @default(autoincrement())
+  productId    Int?     @map("product_id")
+  product      Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  type         String
+  severity     String
+  message      String
+  details      String?  @default("{}")
+  acknowledged Boolean  @default(false)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("alerts")
+}
+
+model ScheduledShipment {
+  id                   Int      @id @default(autoincrement())
+  productId            Int      @map("product_id")
+  product              Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  expectedDeliveryDate String   @map("expected_delivery_date")
+  daysUntilArrival     Int      @default(3) @map("days_until_arrival")
+  quantity             Float    @default(10.0)
+  daysUntilStockout    Float?   @map("days_until_stockout")
+  status               String   @default("PENDING")
+  supplier             String?  @default("")
+  notes                String?  @default("")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  @@map("scheduled_shipments")
+}
+

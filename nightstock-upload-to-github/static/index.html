@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIGHTSTOCK 🎃 — The Inventory of the Damned</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js & Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <!-- Custom Halloween Stylesheet -->
+    <link rel="stylesheet" href="/static/css/nightstock.css">
+</head>
+<body>
+
+    <!-- Fullscreen Lightning Strobe Overlay -->
+    <div id="lightning-flash"></div>
+
+    <!-- Animated Interactive FX Canvas -->
+    <canvas id="spooky-canvas"></canvas>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand-header">
+                <div class="brand-icon">🎃</div>
+                <div class="brand-info">
+                    <h1>NIGHTSTOCK</h1>
+                    <p>The Inventory of the Damned</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item active">
+                    <button data-tab="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button data-tab="inventory">
+                        <span class="nav-icon">📦</span>
+                        <span>Inventory Crypt</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button data-tab="predictions">
+                        <span class="nav-icon">🔮</span>
+                        <span>Demand Prediction</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button data-tab="alerts">
+                        <span class="nav-icon">⚠️</span>
+                        <span>Smart Alerts</span>
+                        <span class="nav-badge" id="nav-alerts-badge" style="display:none;">0</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button data-tab="reports">
+                        <span class="nav-icon">📜</span>
+                        <span>Grimoire Reports</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button data-tab="calendar">
+                        <span class="nav-icon">📅</span>
+                        <span>Delivery Calendar</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button data-tab="demosandbox">
+                        <span class="nav-icon">⚡</span>
+                        <span>Demo Cockpit</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <a href="/witch-pantry" target="_blank" style="text-decoration:none; display:block;">
+                        <button type="button">
+                            <span class="nav-icon">🧙‍♀️</span>
+                            <span>Potion Pantry (React) ↗</span>
+                        </button>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="footer-btn-grid">
+                    <button class="footer-btn" id="toggle-fx-btn">
+                        ✨ FX: ON
+                    </button>
+                    <button class="footer-btn" id="toggle-sound-btn">
+                        🔇 Audio: OFF
+                    </button>
+                </div>
+                <div class="footer-btn-grid">
+                    <button class="footer-btn" onclick="triggerLightningFlash()">
+                        ⚡ Lightning
+                    </button>
+                    <button class="footer-btn" onclick="App.openPitchGuide()">
+                        🎤 3-Min Pitch
+                    </button>
+                </div>
+
+                <!-- Interactive Cauldron Widget -->
+                <div class="cauldron-container" title="Click to stir the bubbling cauldron!" onclick="if(window.soundEngine) window.soundEngine.playCauldronBubble(); window.spawnEctoplasmBurst();">
+                    <div class="cauldron-pot">🧙‍♀️🧪</div>
+                    <div style="font-size: 0.72rem; color: var(--neon-green); margin-top: 2px; font-weight: 700; letter-spacing: 0.5px;">STIR CAULDRON</div>
+                </div>
+
+                <div style="font-size: 0.68rem; color: var(--text-muted); text-align: center; margin-top: 4px;">
+                    College Hackathon Edition • Team of 3
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-wrapper">
+            <!-- Real-World Operations & Demo Strip -->
+            <div class="demo-strip">
+                <div class="demo-strip-text">
+                    <span>⚡ <strong>Real-World Data Engine:</strong></span>
+                    <span>Zero mock data. Import custom CSVs or test manually:</span>
+                </div>
+                <div class="demo-strip-actions">
+                    <button class="demo-strip-btn" style="background: rgba(0,255,136,0.15); border-color: var(--neon-green); color: #86efac;" onclick="App.openCsvImportModal()">📥 Import Real CSV</button>
+                    <button class="demo-strip-btn" onclick="triggerLightningFlash()">⚡ Blood Moon Lightning</button>
+                    <button class="demo-strip-btn" onclick="App.demoInjectSpike()">🦇 Test Anomaly Spike</button>
+                    <button class="demo-strip-btn" onclick="App.loadRealStoreDataset()">📂 Load Benchmark</button>
+                    <button class="demo-strip-btn" style="border-color: rgba(255,42,85,0.4); color: #fca5a5;" onclick="App.clearDatabaseBlankSlate()">🧹 Clean Blank Slate</button>
+                    <button class="demo-strip-btn" onclick="App.openPitchGuide()" style="border-color: var(--neon-purple); color: #e9d5ff;">📋 Pitch Cheatsheet</button>
+                </div>
+            </div>
+
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="mobile-toggle" id="mobile-menu-btn">☰</button>
+                    <h2 class="page-title" id="topbar-title">The Crypt Dashboard</h2>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn-secondary" onclick="App.openCsvImportModal()">
+                        <span>📥</span>
+                        <span>Import Real CSV</span>
+                    </button>
+                    <button class="btn-primary" onclick="App.openAddProductModal()">
+                        <span>+</span>
+                        <span>+ Add Product</span>
+                    </button>
+                    <!-- Google Sign In / User Profile Widget -->
+                    <div id="google-auth-container">
+                        <button class="btn-google-auth" onclick="App.openAuthModal()">
+                            <svg class="google-icon-svg" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                            </svg>
+                            <span>Sign in with Google</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+
+                <!-- TAB 1: DASHBOARD -->
+                <section id="view-dashboard" class="tab-view">
+                    <!-- Manual Testing Zero-Data Banner -->
+                    <div id="dashboard-empty-banner" class="diagnostic-box" style="display:none; margin-bottom: 24px; border-color: var(--neon-orange); background: rgba(255, 106, 0, 0.08);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+                            <div>
+                                <h4 style="color: var(--neon-orange); font-size: 1.05rem; margin-bottom: 4px;">✨ Clean Database Ready for Manual Testing</h4>
+                                <p style="font-size: 0.85rem; color: #cbd5e1;">Zero mock data. Summon a product or record consumption to test real-time inventory tracking and AI demand prediction.</p>
+                            </div>
+                            <button class="btn-primary" onclick="App.openAddProductModal()">+ Summon Your First Reagent</button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Stat Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card card-purple">
+                            <div class="stat-header">
+                                <span class="stat-title">Total Products</span>
+                                <span class="stat-icon">🧪</span>
+                            </div>
+                            <div class="stat-value" id="stat-total-products">--</div>
+                            <div class="stat-footer">Across 6 cursed categories</div>
+                        </div>
+
+                        <div class="stat-card card-orange">
+                            <div class="stat-header">
+                                <span class="stat-title">Crypt Valuation</span>
+                                <span class="stat-icon">💰</span>
+                            </div>
+                            <div class="stat-value" id="stat-inventory-val">$--</div>
+                            <div class="stat-footer">Total asset value at current stock</div>
+                        </div>
+
+                        <div class="stat-card card-orange">
+                            <div class="stat-header">
+                                <span class="stat-title">Low-Stock Warnings</span>
+                                <span class="stat-icon">🟡</span>
+                            </div>
+                            <div class="stat-value" id="stat-low-stock" style="color: var(--neon-orange);">--</div>
+                            <div class="stat-footer">Breaching safety buffer</div>
+                        </div>
+
+                        <div class="stat-card card-red">
+                            <div class="stat-header">
+                                <span class="stat-title">Out of Stock</span>
+                                <span class="stat-icon">💀</span>
+                            </div>
+                            <div class="stat-value" id="stat-out-stock" style="color: var(--neon-red);">--</div>
+                            <div class="stat-footer">Completely depleted items</div>
+                        </div>
+
+                        <div class="stat-card card-green">
+                            <div class="stat-header">
+                                <span class="stat-title">Today's Consumption</span>
+                                <span class="stat-icon">🔥</span>
+                            </div>
+                            <div class="stat-value" id="stat-today-consumption">--</div>
+                            <div class="stat-footer">Units dispensed in last 24h</div>
+                        </div>
+
+                        <div class="stat-card card-purple">
+                            <div class="stat-header">
+                                <span class="stat-title">7D Demand Forecast</span>
+                                <span class="stat-icon">🔮</span>
+                            </div>
+                            <div class="stat-value" id="stat-predicted-7d">--</div>
+                            <div class="stat-footer">Aggregated ritual demand</div>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Health Score Meter -->
+                    <div class="health-meter-card">
+                        <div class="health-meter-info">
+                            <h3>Crypt Inventory Vitality Index</h3>
+                            <p>Real-time statistical health composite measuring service level stability, safety stock buffers, and risk of stockouts across all ritual items.</p>
+                            <div class="health-bar-container">
+                                <div class="health-bar-fill" id="health-bar-fill" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                        <div class="health-score-badge">
+                            <div class="health-score-num" id="health-score-val">85%</div>
+                            <div class="health-score-label">Vitality Score</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid -->
+                    <div class="charts-grid">
+                        <div class="ns-card">
+                            <div class="card-title-bar">
+                                <h3>📊 Stock Velocity: Current Crypt Stock vs Projected 7D Demand</h3>
+                                <span style="font-size: 0.8rem; color: var(--text-muted);">Top Reagents</span>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="velocity-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="ns-card">
+                            <div class="card-title-bar">
+                                <h3>🎃 Category Distribution</h3>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="category-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- TAB 2: INVENTORY CRYPT -->
+                <section id="view-inventory" class="tab-view" style="display:none;">
+                    <div class="ns-card">
+                        <!-- Toolbar -->
+                        <div class="table-toolbar">
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="search-products" placeholder="Search reagents by name, SKU, or supplier...">
+                            </div>
+
+                            <div class="filter-group">
+                                <select id="filter-status" class="filter-select">
+                                    <option value="ALL">All Stock Statuses</option>
+                                    <option value="HEALTHY">🟢 Healthy Stock</option>
+                                    <option value="LOW_STOCK">🟡 Low Stock</option>
+                                    <option value="OUT_OF_STOCK">💀 Out of Stock</option>
+                                </select>
+                                <button class="btn-primary" onclick="App.openAddProductModal()">+ Add Reagent</button>
+                            </div>
+                        </div>
+
+                        <!-- Category Filter Pills -->
+                        <div class="category-pills" id="category-pills-container">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <!-- Table -->
+                        <div class="table-responsive">
+                            <table class="ns-table">
+                                <thead>
+                                    <tr>
+                                        <th>SKU</th>
+                                        <th>Reagent Name & Coven</th>
+                                        <th>Category</th>
+                                        <th>Crypt Stock</th>
+                                        <th>Min Level</th>
+                                        <th>Price</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventory-table-body">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- TAB 3: DEMAND PREDICTION & CRYSTAL BALL -->
+                <section id="view-predictions" class="tab-view" style="display:none;">
+
+                    <!-- THE CRYSTAL BALL ORACLE HERO COMPONENT -->
+                    <div class="crystal-ball-container">
+                        <div class="crystal-ball-wrapper" onclick="App.gazeIntoCrystalBall()" title="Click the Crystal Ball to gaze into the future!">
+                            <div class="crystal-ball-sphere">
+                                <div class="crystal-ball-glare"></div>
+                                <div class="crystal-ball-vision">
+                                    <div class="orb-icon">🔮</div>
+                                    <div class="orb-reading" id="orb-horizon-val">-- Days</div>
+                                    <div class="orb-sub" id="orb-horizon-sub">Depletion Horizon</div>
+                                    <div class="orb-status-pill" id="orb-status-pill">● Safe Horizon</div>
+                                </div>
+                            </div>
+                            <div class="crystal-ball-base"></div>
+                            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 8px; font-weight: 600;">✨ CLICK BALL TO GAZE</div>
+                        </div>
+
+                        <!-- Crystal Ball Insights & Controls -->
+                        <div class="crystal-ball-details">
+                            <div class="crystal-header">
+                                <div>
+                                    <span class="oracle-tag">🔮 SMART DEMAND ORACLE</span>
+                                    <h3 id="crystal-item-name">Select an Item to Gaze into Its Future</h3>
+                                    <p id="crystal-item-sub">Projects demand, detects sudden consumption spikes, and calculates time until stockout.</p>
+                                </div>
+                                <div class="crystal-select-group">
+                                    <label for="prediction-product-select">Target Item:</label>
+                                    <select id="prediction-product-select" class="filter-select" style="min-width: 260px;">
+                                        <!-- Populated dynamically -->
+                                    </select>
+                                    <span id="pred-model-badge" class="status-badge badge-healthy" style="margin-left: auto;">⚙️ Model: Scikit-Learn</span>
+                                </div>
+                            </div>
+
+                            <div class="crystal-metrics-grid">
+                                <div class="crystal-metric-box">
+                                    <span class="cm-label">Current Stock</span>
+                                    <div class="cm-val" id="pred-current-stock">--</div>
+                                    <span class="cm-sub">In storage</span>
+                                </div>
+                                <div class="crystal-metric-box">
+                                    <span class="cm-label">Daily Burn Rate</span>
+                                    <div class="cm-val" id="pred-avg-daily" style="color: var(--neon-cyan);">--</div>
+                                    <span class="cm-sub">Units / day</span>
+                                </div>
+                                <div class="crystal-metric-box">
+                                    <span class="cm-label">7-Day Demand</span>
+                                    <div class="cm-val" id="pred-7d-total" style="color: var(--neon-purple);">--</div>
+                                    <span class="cm-sub">Projected needs</span>
+                                </div>
+                                <div class="crystal-metric-box highlight-reorder">
+                                    <span class="cm-label">Recommended Reorder</span>
+                                    <div class="cm-val" id="pred-reorder-qty" style="color: var(--neon-green);">--</div>
+                                    <span class="cm-sub">Safe reorder amount</span>
+                                </div>
+                            </div>
+
+                            <!-- Plain-English Explanation Card -->
+                            <div class="crystal-insight-card">
+                                <div class="ci-icon">💡</div>
+                                <div class="ci-content">
+                                    <strong>Why Restock? (Clear AI Explanation)</strong>
+                                    <p id="pred-explanation-text">Analyzing consumption history and calculating reorder recommendations...</p>
+                                </div>
+                                <div style="display: flex; gap: 8px; flex-direction: column; align-items: flex-end;">
+                                    <div id="pred-spike-indicator">
+                                        <span class="status-badge badge-healthy">🟢 No Recent Spikes</span>
+                                    </div>
+                                    <span style="font-size: 0.74rem; color: var(--text-muted);">Safety Stock: <strong id="pred-safety-stock" style="color: #fff;">--</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7-Day Day-by-Day Forecast Cards -->
+                    <div class="ns-card">
+                        <div class="card-title-bar">
+                            <h3>📅 7-Day Granular Daily Projection & Confidence Bounds (95% CI)</h3>
+                        </div>
+                        <div class="forecast-cards-grid" id="forecast-daily-cards">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Forecast Interactive Curve Chart -->
+                    <div class="ns-card">
+                        <div class="card-title-bar">
+                            <h3>🔮 Consumption History & 7-Day Machine Learning Forecast Horizon</h3>
+                            <button class="demo-strip-btn" onclick="App.demoInjectSpike()">🧪 Inject Spike on this Item</button>
+                        </div>
+                        <div class="chart-wrapper" style="height: 340px;">
+                            <canvas id="forecast-main-chart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- TAB 4: SMART ALERTS -->
+                <section id="view-alerts" class="tab-view" style="display:none;">
+                    <div class="ns-card">
+                        <div class="card-title-bar">
+                            <h3>⚠️ Haunting Crypt Alerts & Anomaly Warnings</h3>
+                            <button class="btn-secondary" onclick="App.dismissAllAlerts()">Dismiss All Alerts</button>
+                        </div>
+                        <div class="alerts-list" id="alerts-container">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- TAB 5: GRIMOIRE REPORTS -->
+                <section id="view-reports" class="tab-view" style="display:none;">
+                    <!-- Export Actions Card -->
+                    <div class="ns-card" style="background: linear-gradient(90deg, rgba(176,38,255,0.1), rgba(255,106,0,0.1)); border-color: var(--border-glow);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+                            <div>
+                                <h3 style="font-family: var(--font-heading); color: #fff; font-size: 1.2rem;">📥 Export Grimoire Data to CSV</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">Download audit-ready CSV records for your coven's enterprise accountants.</p>
+                            </div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn-primary" onclick="App.downloadCsv('products')">📄 Inventory CSV</button>
+                                <button class="btn-purple" onclick="App.downloadCsv('consumption')">📜 Consumption Logs CSV</button>
+                                <button class="btn-secondary" onclick="App.downloadCsv('predictions')">🔮 7D Forecast CSV</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Valuation Report -->
+                    <div class="ns-card">
+                        <div class="card-title-bar">
+                            <h3>💰 Category Valuation & Stock Capital Audit</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="ns-table">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Total Reagents</th>
+                                        <th>Total Units in Crypt</th>
+                                        <th>Total Asset Valuation</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-category-tbody">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Consumption Breakdown Report -->
+                    <div class="ns-card">
+                        <div class="card-title-bar">
+                            <h3>🔥 30-Day Reagent Consumption & Anomaly Breakdown</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="ns-table">
+                                <thead>
+                                    <tr>
+                                        <th>Reagent Name</th>
+                                        <th>Category</th>
+                                        <th>30-Day Consumed</th>
+                                        <th>Avg Daily</th>
+                                        <th>Peak Daily Record</th>
+                                        <th>Spike Events</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-consumption-tbody">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- TAB 6: HACKATHON DEMO COCKPIT -->
+                <section id="view-demosandbox" class="tab-view" style="display:none;">
+                    <div class="ns-card">
+                        <div class="card-title-bar">
+                            <h3>⚡ College Hackathon Presentation Cockpit</h3>
+                            <button class="btn-primary" onclick="App.openPitchGuide()">Open Team Pitch Script</button>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 24px;">
+                            Designed specifically for the 3 team members to deliver a seamless, high-impact demonstration to hackathon judges without coding anxiety.
+                        </p>
+
+                        <div class="stats-grid">
+                            <div class="stat-card card-orange" style="cursor: pointer;" onclick="App.demoInjectSpike()">
+                                <div class="stat-header">
+                                    <span class="stat-title">Live Demo Action 1</span>
+                                    <span class="stat-icon">🧪</span>
+                                </div>
+                                <div class="stat-value" style="font-size: 1.25rem;">Inject Demand Spike</div>
+                                <div class="stat-footer">Triggers a 3.8x surge on selected item. Watch the ML anomaly detector flag it and trigger an alert!</div>
+                            </div>
+
+                            <div class="stat-card card-purple" style="cursor: pointer;" onclick="App.demoSimulateDay()">
+                                <div class="stat-header">
+                                    <span class="stat-title">Live Demo Action 2</span>
+                                    <span class="stat-icon">⏩</span>
+                                </div>
+                                <div class="stat-value" style="font-size: 1.25rem;">Advance 1 Day</div>
+                                <div class="stat-footer">Simulates overnight consumption across all items and advances the forecast horizon.</div>
+                            </div>
+
+                            <div class="stat-card card-green" style="cursor: pointer;" onclick="App.demoResetSeed()">
+                                <div class="stat-header">
+                                    <span class="stat-title">Live Demo Action 3</span>
+                                    <span class="stat-icon">🔄</span>
+                                </div>
+                                <div class="stat-value" style="font-size: 1.25rem;">Summon Fresh Stock</div>
+                                <div class="stat-footer">Instantly wipes and reseeds 15 realistic items and 30 days of consumption logs.</div>
+                            </div>
+                        </div>
+
+                        <!-- 3-Member Role Split Guide -->
+                        <div class="diagnostic-box" style="margin-top: 18px;">
+                            <h4 style="color: var(--neon-orange); margin-bottom: 10px;">👥 Suggested Hackathon Presentation Roles (3 Members):</h4>
+                            <ul style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.8; margin-left: 20px;">
+                                <li><strong>Member 1 (Product & Problem Statement):</strong> Explains the business problem: stockouts lose revenue, overstock spoils; introduces NIGHTSTOCK — The Inventory of the Damned.</li>
+                                <li><strong>Member 2 (Architecture & Demo):</strong> Demonstrates the Dashboard, Inventory CRUD, live stock adjustments, and logs a real-time consumption event.</li>
+                                <li><strong>Member 3 (AI/ML & Demand Prediction):</strong> Explains the Scikit-Learn Ridge regression model, 7-day forecast confidence bounds, anomaly spike detection, and restock explanations.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 7: SUPPLY CHAIN DELIVERY & DEPLETION CALENDAR -->
+                <section id="view-calendar" class="tab-view" style="display:none;">
+                    <!-- Top Summary Banner -->
+                    <div class="calendar-top-banner">
+                        <div>
+                            <span class="oracle-tag">📅 SUPPLY CHAIN LEAD-TIME INTELLIGENCE</span>
+                            <h3 style="font-size: 1.25rem; font-weight: 700; color: #fff; margin: 4px 0;">Delivery & Stockout Horizon Calendar</h3>
+                            <p style="font-size: 0.84rem; color: var(--text-secondary);">
+                                Input and track when new stock is arriving vs when current inventory runs out.
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <button class="btn-primary" onclick="App.openScheduleShipmentModal()">
+                                <span>+</span>
+                                <span>Schedule Restock Arrival</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Quick Lead-Time & Stockout Input Card -->
+                    <div class="ns-card" style="margin-bottom: 24px;">
+                        <div class="card-title-bar">
+                            <h3>⚡ Quick Supply Lead-Time Calculator</h3>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">Simulate arrival vs stockout dates</span>
+                        </div>
+                        <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; align-items: flex-end;">
+                            <div class="form-group">
+                                <label>Target Item</label>
+                                <select id="cal-input-product" class="form-control" onchange="App.onCalendarProductSelected()">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>📦 In How Many Days Stock Comes?</label>
+                                <input type="number" id="cal-input-arrival-days" class="form-control" value="3" min="1" max="90" oninput="App.updateCalendarLeadGap()">
+                            </div>
+                            <div class="form-group">
+                                <label>Quantity Coming</label>
+                                <input type="number" id="cal-input-quantity" class="form-control" value="30" min="1" step="1">
+                            </div>
+                            <div class="form-group">
+                                <label>💀 In How Many Days Stock Runs Out?</label>
+                                <input type="number" id="cal-input-stockout-days" class="form-control" value="5" min="0.1" step="0.1" oninput="App.updateCalendarLeadGap()">
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn-purple" style="height: 40px; width: 100%; justify-content: center;" onclick="App.submitQuickCalendarShipment()">
+                                    📅 Add to Schedule
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Safety Margin Gap Indicator -->
+                        <div id="cal-lead-gap-indicator" style="margin-top: 14px;">
+                            <div class="gap-indicator-safe">
+                                ✅ <strong>Safe Supply Chain:</strong> New stock arrives 2.0 days before current inventory runs out.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar Grid View -->
+                    <div class="calendar-grid-wrapper">
+                        <div class="calendar-header-bar">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <h3 id="calendar-month-title" style="font-size: 1.15rem; font-weight: 700; color: #fff;">November 2026</h3>
+                                <div style="display: flex; gap: 4px;">
+                                    <button class="footer-btn" style="padding: 4px 10px;" onclick="App.changeCalendarMonth(-1)">◀</button>
+                                    <button class="footer-btn" style="padding: 4px 10px;" onclick="App.changeCalendarMonth(1)">▶</button>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 14px; font-size: 0.76rem;">
+                                <span style="display: inline-flex; align-items: center; gap: 6px; color: #34d399;">
+                                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
+                                    📦 Incoming Delivery
+                                </span>
+                                <span style="display: inline-flex; align-items: center; gap: 6px; color: #f87171;">
+                                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444;"></span>
+                                    💀 Projected Stockout
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- 7 Days of the Week Header -->
+                        <div class="calendar-days-grid" style="margin-bottom: 6px;">
+                            <div class="calendar-day-header">Sun</div>
+                            <div class="calendar-day-header">Mon</div>
+                            <div class="calendar-day-header">Tue</div>
+                            <div class="calendar-day-header">Wed</div>
+                            <div class="calendar-day-header">Thu</div>
+                            <div class="calendar-day-header">Fri</div>
+                            <div class="calendar-day-header">Sat</div>
+                        </div>
+
+                        <!-- Dynamic Month Days Cells -->
+                        <div class="calendar-days-grid" id="calendar-grid-cells">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Scheduled Shipments Table -->
+                    <div class="ns-card">
+                        <div class="card-title-bar">
+                            <h3>📦 Scheduled Incoming Orders & Lead-Time Analysis</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="ns-table">
+                                <thead>
+                                    <tr>
+                                        <th>Item Name</th>
+                                        <th>Expected Arrival</th>
+                                        <th>Lead Time</th>
+                                        <th>Quantity</th>
+                                        <th>Stockout Status</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="calendar-shipments-tbody">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: ADD PRODUCT -->
+    <div class="modal-overlay" id="modal-add-product">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Summon New Reagent</h3>
+                <button class="modal-close" onclick="App.closeAddProductModal()">&times;</button>
+            </div>
+            <form id="form-add-product" onsubmit="App.handleAddProduct(event)">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>SKU (Code)</label>
+                            <input type="text" name="sku" class="form-control" placeholder="e.g. NS-POT-099" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Reagent Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="e.g. Phantom Tears" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select name="category" class="form-control" required>
+                                <option value="Potions & Elixirs">Potions & Elixirs</option>
+                                <option value="Crypt Herbs">Crypt Herbs</option>
+                                <option value="Necromancy Reagents">Necromancy Reagents</option>
+                                <option value="Spectral Essences">Spectral Essences</option>
+                                <option value="Cursed Relics">Cursed Relics</option>
+                                <option value="Witchcraft Supplies">Witchcraft Supplies</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Unit of Measure</label>
+                            <input type="text" name="unit" class="form-control" placeholder="Vials, Ounces, Sacks..." value="Vials" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Initial Stock</label>
+                            <input type="number" step="0.5" name="current_stock" class="form-control" value="25" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Min Reorder Threshold</label>
+                            <input type="number" step="0.5" name="min_stock_level" class="form-control" value="15" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Unit Price ($)</label>
+                            <input type="number" step="0.1" name="unit_price" class="form-control" value="24.50" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Lead Time (Days)</label>
+                            <input type="number" name="lead_time_days" class="form-control" value="3" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Supplier / Coven</label>
+                            <input type="text" name="supplier" class="form-control" placeholder="e.g. Blackwood Coven Logistics" value="Cryptkeeper Wholesale">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Spooky Notes / Lore</label>
+                            <input type="text" name="notes" class="form-control" placeholder="Harvested under blood moon...">
+                        </div>
+                        <input type="hidden" name="max_stock_capacity" value="150">
+                        <input type="hidden" name="spookiness_level" value="4">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="App.closeAddProductModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Summon Reagent</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: EDIT PRODUCT -->
+    <div class="modal-overlay" id="modal-edit-product">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Inscribe Reagent Details</h3>
+                <button class="modal-close" onclick="App.closeEditModal()">&times;</button>
+            </div>
+            <form id="form-edit-product" onsubmit="App.handleEditProduct(event)">
+                <input type="hidden" name="product_id">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>SKU</label>
+                            <input type="text" name="sku" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Reagent Name</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select name="category" class="form-control" required>
+                                <option value="Potions & Elixirs">Potions & Elixirs</option>
+                                <option value="Crypt Herbs">Crypt Herbs</option>
+                                <option value="Necromancy Reagents">Necromancy Reagents</option>
+                                <option value="Spectral Essences">Spectral Essences</option>
+                                <option value="Cursed Relics">Cursed Relics</option>
+                                <option value="Witchcraft Supplies">Witchcraft Supplies</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Unit</label>
+                            <input type="text" name="unit" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Current Stock</label>
+                            <input type="number" step="0.5" name="current_stock" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Min Reorder Level</label>
+                            <input type="number" step="0.5" name="min_stock_level" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Unit Price ($)</label>
+                            <input type="number" step="0.1" name="unit_price" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Lead Time (Days)</label>
+                            <input type="number" name="lead_time_days" class="form-control" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Supplier</label>
+                            <input type="text" name="supplier" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="App.closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: LOG CONSUMPTION -->
+    <div class="modal-overlay" id="modal-log-consumption">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🧪 Record Ritual Consumption</h3>
+                <button class="modal-close" onclick="App.closeLogConsumptionModal()">&times;</button>
+            </div>
+            <form id="form-log-consumption" onsubmit="App.handleLogConsumption(event)">
+                <input type="hidden" name="product_id">
+                <div class="modal-body">
+                    <div style="background: rgba(176,38,255,0.1); border: 1px solid var(--border-glow); padding: 12px 16px; border-radius: 10px; margin-bottom: 16px;">
+                        <strong id="log-prod-name" style="color: var(--neon-orange); font-size: 1.05rem;">Product</strong>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity Consumed</label>
+                        <input type="number" step="0.5" min="0.1" name="quantity" class="form-control" required>
+                        <span style="font-size:0.75rem; color: var(--text-muted); margin-top: 4px;">Large quantities automatically trigger anomaly spike detection!</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ritual Purpose / Reason</label>
+                        <input type="text" name="reason" class="form-control" value="Midnight Cauldron Boiling" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Logged By</label>
+                        <input type="text" name="logged_by" class="form-control" value="High Necromancer" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="App.closeLogConsumptionModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Record & Update Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: HACKATHON PITCH GUIDE -->
+    <div class="modal-overlay" id="modal-pitch-guide">
+        <div class="modal-card" style="max-width: 680px;">
+            <div class="modal-header">
+                <h3>🎤 3-Minute Hackathon Presentation Cheatsheet</h3>
+                <button class="modal-close" onclick="App.closePitchGuide()">&times;</button>
+            </div>
+            <div class="modal-body" style="line-height: 1.6; font-size: 0.9rem; color: #cbd5e1;">
+                <h4 style="color: var(--neon-orange); margin-bottom: 6px;">⏱️ Minute 0:00 - 1:00 (Speaker 1 - The Hook & Problem)</h4>
+                <p><em>"Hello judges, we are Team NIGHTSTOCK. In modern retail and supply chains, stockouts lead to lost revenue while overstocking leads to tied-up capital and spoilage. We built NIGHTSTOCK — The Inventory of the Damned — combining smart inventory controls with machine-learning demand prediction in a thrilling Halloween theme."</em></p>
+
+                <h4 style="color: var(--neon-purple); margin-top: 14px; margin-bottom: 6px;">⏱️ Minute 1:00 - 2:00 (Speaker 2 - Live Operations)</h4>
+                <p><em>"Here is our live dashboard. We track inventory valuation, stockout warnings, and health index. Let me show you our Inventory Crypt: we can filter items, do instant stock updates, or log ritual consumption. Notice how everything updates in real time with zero latency."</em></p>
+
+                <h4 style="color: var(--neon-green); margin-top: 14px; margin-bottom: 6px;">⏱️ Minute 2:00 - 3:00 (Speaker 3 - AI Demand Engine & Spikes)</h4>
+                <p><em>"Now for our core innovation: Demand Prediction. Using historical consumption, our Scikit-Learn Ridge Regression model forecasts demand for the next 7 days with 95% confidence intervals. It calculates recommended reorder quantities and explains in plain English why restocking is needed. Watch as I inject a sudden surge spike: our engine flags the anomaly with a Z-score calculation and instantly generates a warning alert!"</em></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="App.closePitchGuide()">Ready to Win! 🏆</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CSV IMPORT & REAL DATA MANAGEMENT (NO MOCK DATA) -->
+    <div class="modal-overlay" id="modal-csv-import">
+        <div class="modal-card" style="max-width: 680px;">
+            <div class="modal-header">
+                <h3>📥 Real-World Data Ingestion & CSV Import</h3>
+                <button class="modal-close" onclick="App.closeCsvImportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px;">
+                    NIGHTSTOCK runs strictly on <strong>real data</strong>. Upload your company or store CSV files, or reload our verified real retail benchmark dataset.
+                </p>
+
+                <!-- Section 1: Upload Inventory CSV -->
+                <div style="background: rgba(13, 8, 24, 0.7); border: 1px solid var(--border-dim); border-radius: 12px; padding: 18px; margin-bottom: 18px;">
+                    <h4 style="color: var(--neon-orange); margin-bottom: 8px; font-size: 0.95rem;">1. Upload Real Products Inventory CSV</h4>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">
+                        Required columns: <code>sku, name, category, unit, current_stock, min_stock_level, unit_price, lead_time_days, supplier</code>
+                    </p>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <input type="file" accept=".csv,text/csv" id="csv-inventory-file" onchange="App.handleInventoryFileSelect(event)" style="font-size: 0.85rem; color: #fff;">
+                    </div>
+                </div>
+
+                <!-- Section 2: Upload Consumption Logs CSV -->
+                <div style="background: rgba(13, 8, 24, 0.7); border: 1px solid var(--border-dim); border-radius: 12px; padding: 18px; margin-bottom: 18px;">
+                    <h4 style="color: var(--neon-purple); margin-bottom: 8px; font-size: 0.95rem;">2. Upload Real Consumption / Sales Transactions CSV</h4>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">
+                        Required columns: <code>date, sku, quantity, logged_by, reason</code>
+                    </p>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <input type="file" accept=".csv,text/csv" id="csv-consumption-file" onchange="App.handleConsumptionFileSelect(event)" style="font-size: 0.85rem; color: #fff;">
+                    </div>
+                </div>
+
+                <!-- Section 3: Preset Benchmark & Blank Slate -->
+                <div style="background: rgba(13, 8, 24, 0.7); border: 1px solid var(--border-dim); border-radius: 12px; padding: 18px;">
+                    <h4 style="color: var(--neon-green); margin-bottom: 8px; font-size: 0.95rem;">3. Instant Data Actions</h4>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px;">
+                        <button class="btn-primary" style="font-size: 0.8rem; padding: 8px 14px;" onclick="App.loadRealStoreDataset()">
+                            📂 Reload Authentic Retail Benchmark
+                        </button>
+                        <button class="btn-danger" style="font-size: 0.8rem; padding: 8px 14px;" onclick="App.clearDatabaseBlankSlate()">
+                            🧹 Clear All Data (Blank Slate)
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="App.closeCsvImportModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="/static/js/sounds.js"></script>
+    <script src="/static/js/spooky-fx.js"></script>
+    <script src="/static/js/charts.js"></script>
+    <script src="/static/js/app.js"></script>
+
+    <!-- MODAL: GOOGLE SIGN IN & SIGN UP -->
+    <div class="modal-overlay" id="modal-auth">
+        <div class="modal-card" style="max-width: 440px;">
+            <div class="modal-header" style="justify-content: center; position: relative;">
+                <div style="text-align: center;">
+                    <svg class="google-icon-svg" style="width: 32px; height: 32px; margin: 0 auto 6px;" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    <h3 style="font-size: 1.15rem; color: #fff;">Sign in with Google</h3>
+                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">to continue to NIGHTSTOCK Supply Platform</p>
+                </div>
+                <button class="modal-close" style="position: absolute; right: 18px; top: 18px;" onclick="App.closeAuthModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 20px 24px;">
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; font-weight: 600;">Choose an account</p>
+
+                <!-- 1-Click Quick Account Selectors -->
+                <div class="auth-account-tile" onclick="App.signInAsGoogleUser('Ayush', 'ayush.developer@gmail.com')">
+                    <div class="user-avatar-circle" style="background: #ea4335;">A</div>
+                    <div class="user-info-text">
+                        <span class="user-display-name">Ayush (Admin)</span>
+                        <span class="user-email-sub">ayush.developer@gmail.com</span>
+                    </div>
+                </div>
+
+                <div class="auth-account-tile" onclick="App.signInAsGoogleUser('NIGHTSTOCK Team', 'hackathon.team@gmail.com')">
+                    <div class="user-avatar-circle" style="background: #4285f4;">N</div>
+                    <div class="user-info-text">
+                        <span class="user-display-name">NIGHTSTOCK Team</span>
+                        <span class="user-email-sub">hackathon.team@gmail.com</span>
+                    </div>
+                </div>
+
+                <!-- Custom Gmail Input -->
+                <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
+                    <label style="font-size: 0.76rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Or enter any Gmail address to Sign In / Sign Up:</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="email" id="custom-gmail-input" class="form-control" placeholder="your.name@gmail.com" style="flex: 1;">
+                        <button class="btn-primary" onclick="App.signInWithCustomGmail()">Continue</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: center; font-size: 0.72rem; color: var(--text-muted);">
+                College Hackathon Google Authentication Demo
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: SCHEDULE RESTOCK SHIPMENT -->
+    <div class="modal-overlay" id="modal-schedule-shipment">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>📅 Schedule Stock Restock Delivery</h3>
+                <button class="modal-close" onclick="App.closeScheduleShipmentModal()">&times;</button>
+            </div>
+            <form id="form-schedule-shipment" onsubmit="App.handleScheduleShipmentSubmit(event)">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Product / Item</label>
+                            <select id="modal-cal-product" name="product_id" class="form-control" required onchange="App.onModalCalProductChange()">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>📦 In How Many Days Stock Comes?</label>
+                            <input type="number" id="modal-cal-arrival-days" name="days_until_arrival" class="form-control" value="3" min="1" max="90" required oninput="App.updateModalCalLeadGap()">
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity Coming</label>
+                            <input type="number" name="quantity" class="form-control" value="50" min="1" step="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>💀 In How Many Days Stock Runs Out?</label>
+                            <input type="number" id="modal-cal-stockout-days" name="days_until_stockout" class="form-control" value="6" min="0.1" step="0.1" oninput="App.updateModalCalLeadGap()">
+                        </div>
+                        <div class="form-group">
+                            <label>Supplier / Courier</label>
+                            <input type="text" name="supplier" class="form-control" placeholder="e.g. Alchemy Logistics, FedEx" value="Alchemy Logistics">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Notes / Tracking</label>
+                            <input type="text" name="notes" class="form-control" placeholder="e.g. Order #8821 via Priority Flight">
+                        </div>
+                    </div>
+
+                    <div id="modal-cal-lead-gap-indicator" style="margin-top: 10px;">
+                        <div class="gap-indicator-safe">
+                            ✅ <strong>Safe Supply Chain:</strong> New stock arrives 3.0 days before current stock runs out.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="App.closeScheduleShipmentModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save to Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
